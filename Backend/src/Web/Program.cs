@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://localhost:8080") // Tu origen de Aurelia
+            .WithOrigins("http://localhost:8080", "http://[::1]:8080")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });

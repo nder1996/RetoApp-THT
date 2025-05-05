@@ -1,0 +1,28 @@
+import { RouterConfiguration, Router } from 'aurelia-router';
+import { PLATFORM } from 'aurelia-pal';
+
+export class App {
+  public message = 'hola pppcsdasdfasdfasdf2222!';
+  router: Router;
+
+  configureRouter(config: RouterConfiguration, router: Router) {
+    this.router = router;
+    config.title = 'Mi Aplicación Aurelia';
+    config.map([
+     /* {
+        route: ['', 'home'],
+        name: 'home',
+        moduleId: PLATFORM.moduleName('resources/components/crud-task/crud-task'),
+        nav: true,
+        title: 'Inicio'
+      },*/
+      {
+        route: 'task',
+        name: 'crud-task',
+        moduleId: PLATFORM.moduleName('zzcrud-task/crud-task'),
+        nav: true,
+        title: 'Gestión de Tareas'
+      }
+    ]);
+  }
+}

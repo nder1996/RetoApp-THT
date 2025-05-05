@@ -1,0 +1,99 @@
+<template>
+  <div class="container">
+    <h1 class="title">${message}</h1>
+    <div class="container-fluid card">
+      <table class="table table-dark table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">N° TAREA</th>
+            <th scope="col">TÍTULO</th>
+            <th scope="col">DESCRIPCIÓN</th>
+            <th scope="col">VENCIMIENTO</th>
+            <th scope="col">ESTADO</th>
+            <th scope="col">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Diseño de interfaz</td>
+            <td>Crear wireframes para la página principal</td>
+            <td>12/05/2025</td>
+            <td><span class="badge bg-warning">Pendiente</span></td>
+            <td>
+              <div style="gap: 10px;" class="d-flex flex-row">
+                <button class="btn btn-sm btn-primary">Editar</button>
+                <button class="btn btn-sm btn-danger">Eliminar</button>
+              </div>
+    
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Desarrollo backend</td>
+            <td>Implementar API REST para gestión de usuarios</td>
+            <td>18/05/2025</td>
+            <td><span class="badge bg-info">En progreso</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary">Editar</button>
+              <button class="btn btn-sm btn-danger">Eliminar</button>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Testing</td>
+            <td>Realizar pruebas unitarias del módulo de autenticación</td>
+            <td>25/05/2025</td>
+            <td><span class="badge bg-success">Completada</span></td>
+            <td>
+              <button class="btn btn-sm btn-primary">Editar</button>
+              <button class="btn btn-sm btn-danger">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <style>
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .title {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .task-list {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .task-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-title {
+      font-weight: bold;
+    }
+
+    .task-status {
+      color: #666;
+    }
+  </style>
+</template>

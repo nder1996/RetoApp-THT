@@ -1,0 +1,10 @@
+<template>
+  <div class="${getPositionClass()}" style="z-index: 1050;">
+    <div class="toast-container">
+      <div repeat.for="alert of alerts" class="alert alert-${alert.type} alert-dismissible fade show" role="alert">
+        <div innerhtml.bind="alert.message"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" click.trigger="dismiss(alert.id)"></button>
+      </div>
+    </div>
+  </div>
+</template>

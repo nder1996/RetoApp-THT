@@ -1,0 +1,144 @@
+<template>
+  <h1 class="title">${message}</h1>
+  <div class="container-fluid">
+    <table class="table table-striped table-hover table-bordered table-responsive text-center align-middle w-100">
+      <thead>
+        <tr>
+          <th scope="col">N° TAREA</th>
+          <th scope="col">TÍTULO</th>
+          <th scope="col">DESCRIPCIÓN</th>
+          <th scope="col">VENCIMIENTO</th>
+          <th scope="col">ESTADO</th>
+          <th scope="col">ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr repeat.for="task of tasks">
+          <th scope="row">${task.id}</th>
+          <td>${task.title}</td>
+          <td>${task.description}</td>
+          <td>${task.dueDate}</td>
+          <td><span class="badge ${task.statusClass}">${task.status}</span></td>
+          <td>
+            <div class="d-flex flex-row justify-content-center gap-2">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                click.delegate="editTask(task)">
+                Editar
+              </button>
+              <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                click.delegate="prepareDelete(task)">Eliminar</button>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="container" action="">
+            <div class="row">
+              <div class="col-12">
+                <label for="">N° TAREA</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"
+                  value.bind="selectEdit.id">
+              </div>
+              <div class="col-12">
+                <label for="">TÍTULO</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"
+                value.bind="selectEdit.title">
+              </div>
+              <div class="col-12">
+                <label for="">DESCRIPCIÓN</label>
+                ${selectEdit.description}
+              </div>
+              <div class="col-12">
+                <label for="">VENCIMIENTO</label>
+                ${selectEdit.dueDate}
+              </div>
+              <div class="col-12">
+                <label for="">ESTADO</label>
+                ${selectEdit.status}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ¿Está seguro de que desea eliminar la tarea <strong>${selectDetele.title}</strong> ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+            click.delegate="deleteTask()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .title {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .task-list {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .task-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-title {
+      font-weight: bold;
+    }
+
+    .task-status {
+      color: #666;
+    }
+  </style>
+</template>

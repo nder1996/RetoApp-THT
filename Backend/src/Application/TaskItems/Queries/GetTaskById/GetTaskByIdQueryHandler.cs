@@ -10,9 +10,9 @@ internal class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, TaskI
 {
 
     private readonly IApplicationDbContext _context;
-    private readonly ICacheService _cacheService;
+    private readonly ICacheService_1 _cacheService;
 
-    public GetTaskByIdQueryHandler(IApplicationDbContext context, ICacheService cacheService)
+    public GetTaskByIdQueryHandler(IApplicationDbContext context, ICacheService_1 cacheService)
     {
         _context = context;
         _cacheService = cacheService;

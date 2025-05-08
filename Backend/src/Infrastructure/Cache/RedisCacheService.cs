@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace CleanArchitecture.Infrastructure.Cache;
 
-public class RedisCacheService : ICacheService
+public class RedisCacheService : ICacheService_1
 {
     private readonly IConnectionMultiplexer _redisConnection;
     private readonly IDatabase _cache;
@@ -44,24 +44,41 @@ public class RedisCacheService : ICacheService
         return await _cache.KeyExistsAsync(key);
     }
 
-    async Task<T> ICacheService.GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiration)
+    public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiration = null)
     {
-        // Verificar si la clave existe en la caché
-        var value = await GetAsync<T>(key);
+        // Verificar si la clave EXISTE en Redis
+        bool keyExists = await ExistsAsync(key);
 
-        // Si el valor existe, devolverlo
-        if (value != null)
+        if (keyExists)
         {
-            return value;
+            // Si la clave existe, verificar si ha expirado
+            var timeToLive = await _cache.KeyTimeToLiveAsync(key);
+            if (timeToLive == null || timeToLive <= TimeSpan.Zero)
+            {
+                Console.WriteLine($"[RedisCacheService] La clave {key} ha expirado. Eliminándola del caché.");
+                await RemoveAsync(key);
+            }
+            else
+            {
+                // Retornar el valor almacenado si no ha expirado
+                var cachedValue = await GetAsync<T>(key);
+                if (cachedValue is not null)
+                {
+                    Console.WriteLine($"[RedisCacheService] Datos obtenidos desde el caché para la clave: {key}");
+                    return cachedValue;
+                }
+            }
         }
 
-        // Si no existe, ejecutar la función factory para obtener el valor
+        // Si la clave NO existe o ha expirado, ejecutar la consulta a la base de datos
+        Console.WriteLine($"[RedisCacheService] Datos no encontrados en caché. Consultando la base de datos para la clave: {key}");
         var newValue = await factory();
 
-        // Guardar el nuevo valor en la caché
-        await SetAsync(key, newValue, expiration);
+        // Guardar el nuevo valor en Redis con el tiempo de expiración
+        await SetAsync(key, newValue, expiration ?? TimeSpan.FromMinutes(1));
 
-        // Devolver el nuevo valor
         return newValue;
     }
-} 
+
+
+}

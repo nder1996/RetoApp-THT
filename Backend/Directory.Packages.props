@@ -55,6 +55,6 @@
     <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
     <!--#endif-->
-    <PackageVersion Include="StackExchange.Redis" Version="2.7.17" />
+    <PackageVersion Include="StackExchange.Redis" Version="2.7.27" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,8 @@ using Microsoft.Extensions.Extension;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using MassTransit.Serialization;
+using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Infrastructure.Cache;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +15,7 @@ builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
+
 
 
 // Despus de AddWebServices()
@@ -30,6 +33,7 @@ builder.Services.AddCors(options =>
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect(redisConnectionString));
+builder.Services.AddSingleton<ICacheService_1, RedisCacheService>();
 
 builder.Services.AddMassTransit(config =>
 {

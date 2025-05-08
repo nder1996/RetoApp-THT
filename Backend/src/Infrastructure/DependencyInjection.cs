@@ -70,7 +70,7 @@ public static class DependencyInjection
         // Add Redis
         services.AddSingleton<IConnectionMultiplexer>(sp =>
             ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis") ?? "localhost:6379"));
-        services.AddSingleton<ICacheService, RedisCacheService>();
+        services.AddSingleton<ICacheService_1, RedisCacheService>();
 
         return services;
     }

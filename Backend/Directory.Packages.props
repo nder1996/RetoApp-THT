@@ -12,6 +12,9 @@
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
+    <PackageVersion Include="Foundatio" Version="11.0.8" />
+    <PackageVersion Include="MassTransit" Version="8.4.0" />
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.4.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
@@ -31,6 +34,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
     <!--#endif-->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.2" />
@@ -43,6 +47,7 @@
     <PackageVersion Include="nunit" Version="3.14.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageVersion Include="RabbitMQ.Client" Version="7.1.2" />
     <PackageVersion Include="Respawn" Version="6.1.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="3.6.0" />
     <!--#if(!UseApiOnly)-->
@@ -50,5 +55,6 @@
     <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
     <!--#endif-->
+    <PackageVersion Include="StackExchange.Redis" Version="2.7.17" />
   </ItemGroup>
 </Project>

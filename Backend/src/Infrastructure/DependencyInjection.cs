@@ -1,5 +1,8 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
+﻿using System;
+using System.Text;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Constants;
+using CleanArchitecture.Infrastructure.Cache;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Data.Interceptors;
 using CleanArchitecture.Infrastructure.Identity;
@@ -7,8 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Extensions.Extension;
 
 public static class DependencyInjection
 {
@@ -47,7 +53,7 @@ public static class DependencyInjection
             .AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddApiEndpoints();
+            .AddApiEndpoints;
 #else
         services
             .AddDefaultIdentity<ApplicationUser>()
@@ -60,6 +66,11 @@ public static class DependencyInjection
 
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
+
+        // Add Redis
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+            ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis") ?? "localhost:6379"));
+        services.AddSingleton<ICacheService, RedisCacheService>();
 
         return services;
     }

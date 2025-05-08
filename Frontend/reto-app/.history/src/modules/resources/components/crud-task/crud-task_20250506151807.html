@@ -1,0 +1,183 @@
+<template>
+  <!-- Sistema de alertas -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    <div repeat.for="alert of alertService.alerts" class="alert alert-${alert.type} alert-dismissible fade show"
+      role="alert">
+      ${alert.message}
+      <button type="button" class="btn-close" click.trigger="alertService.dismiss(alert.id)"></button>
+    </div>
+  </div>
+
+
+  <!-- Coloca el componente de alerta al principio de tu template -->
+  <alert position="top-right"></alert>
+  <style>
+    .container-form {
+      /*border: 1px solid red;*/
+    }
+
+    .container-form .col-12 {
+      border: 1px solid whitesmoke;
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+
+    .container-form .col-12 label {
+      margin-bottom: 10px;
+    }
+  </style>
+
+  <div class="container-fluid">
+    <div class="container text-center" style="padding: 1rem;">
+      <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        click.delegate="addTask()">
+        <i class="bi bi-file-earmark-plus-fill"></i> Agregar
+      </button>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6 offset-md-3">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" placeholder="Buscar por título..."
+            value.bind="searchTerm & debounce:300" />
+          <button class="btn btn-outline-secondary" type="button" click.delegate="clearSearch()" if.bind="searchTerm">
+            <i class="bi bi-x-circle"></i> Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered table-responsive text-center align-middle w-100">
+      <thead>
+        <tr>
+          <th scope="col">N° TAREA</th>
+          <th scope="col">TÍTULO</th>
+          <th scope="col">DESCRIPCIÓN</th>
+          <th scope="col">VENCIMIENTO</th>
+          <th scope="col">ESTADO</th>
+          <th scope="col">ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr repeat.for="task of filteredTasks">
+          <th scope="row">${task.id}</th>
+          <td>${task.title}</td>
+          <td>${task.description}</td>
+          <td>${formatDate(task.dueDate)}</td>
+          <td><span class="badge ${statusTaskTag(task.status)}">${task.status}</span></td>
+          <td>
+            <div class="d-flex flex-row justify-content-center gap-4">
+              <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
+                data-bs-target="#exampleModal" click.delegate="editTask(task)">
+                <i class="bi bi-pencil-square"></i>
+                Editar
+              </button>
+              <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                click.delegate="prepareDelete(task)">
+                <i class="bi bi-trash"></i>
+                Eliminar</button>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">${EditModal === true ? 'Editar Tarea' : 'Agregar Tarea'}
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="container container-form" submit.delegate="validateForm() && submitForm()" novalidate>
+            <div class="row">
+              <div class="col-12" if.bind="EditModal == true">
+                <label for="taskId">N° TAREA</label>
+                <input type="text" class="form-control" id="taskId" placeholder="ID de la tarea"
+                  value.bind="modalDataForm.Id" disabled>
+              </div>
+              <div class="col-12">
+                <label for="taskTitle">TÍTULO</label>
+                <input type="text" class="form-control ${formErrors.title ? 'is-invalid' : ''}" id="taskTitle"
+                  placeholder="Título de la tarea" value.bind="modalDataForm.Title">
+                <div class="invalid-feedback" if.bind="formErrors.title">
+                  ${formErrors.title}
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="taskDesc">DESCRIPCIÓN</label>
+                <textarea class="form-control ${formErrors.description ? 'is-invalid' : ''}" id="taskDesc" rows="3"
+                  value.bind="modalDataForm.Description"></textarea>
+                <div class="invalid-feedback" if.bind="formErrors.description">
+                  ${formErrors.description}
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="dueDate">VENCIMIENTO</label>
+                <div class="input-group">
+                  <input type="date" class="form-control ${formErrors.dueDate ? 'is-invalid' : ''}" id="dueDate"
+                    value.bind="modalDataForm.DueDate">
+                  <div class="invalid-feedback" if.bind="formErrors.dueDate">
+                    ${formErrors.dueDate}
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="taskStatus">ESTADO</label>
+                <div class="input-group">
+                  <select class="form-select ${formErrors.status ? 'is-invalid' : ''}" id="taskStatus"
+                    aria-label="Selección de estado" value.bind="modalDataForm.Status">
+                    <option value="">Seleccione un estado</option>
+                    <option value="PENDIENTE">🟡 PENDIENTE</option>
+                    <option value="EN PROGRESO">🔵 EN PROGRESO</option>
+                    <option value="COMPLETADO">🟢 COMPLETADO</option>
+                  </select>
+                  <div class="invalid-feedback" if.bind="formErrors.status">
+                    ${formErrors.status}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" click.delegate="validateForm() && submitForm()">
+            ${EditModal === true ? 'Guardar Cambios' : 'Agregar Tarea'}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal de confirmación -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ¿Está seguro de que desea eliminar la tarea <strong>${selectDetele.title}</strong> ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+            click.delegate="deleteTask()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</template>

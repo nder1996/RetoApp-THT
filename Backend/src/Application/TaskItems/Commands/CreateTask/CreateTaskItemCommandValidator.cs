@@ -16,9 +16,9 @@ public class CreateTaskItemCommandValidator : AbstractValidator<CreateTaskItemCo
         RuleFor(t => t.Description)
             .MaximumLength(500).WithMessage("La descripción no puede exceder los 500 caracteres");
 
-       /* RuleFor(t => t.Status)
+        RuleFor(t => t.Status)
             .NotEmpty().WithMessage("El estado de la tarea es obligatorio")
-            .Matches("^(PENDIENTE|EN PROGRESO|COMPLETADO)$").WithMessage("El estado solo puede ser 'PENDIENTE', 'EN PROGRESO' o 'COMPLETADO'");*/
+            .Matches("^(PENDIENTE|EN PROGRESO|COMPLETADO)$").WithMessage("El estado solo puede ser 'PENDIENTE', 'EN PROGRESO' o 'COMPLETADO'");
 
         RuleFor(t => t.State)
             .NotEmpty()

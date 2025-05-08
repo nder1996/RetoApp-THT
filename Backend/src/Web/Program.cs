@@ -1,5 +1,10 @@
 using CleanArchitecture.Infrastructure.Data;
-
+using CleanArchitecture.Infrastructure.Mensajería;
+using MassTransit;
+using Microsoft.Extensions.Extension;
+using RabbitMQ.Client;
+using StackExchange.Redis;
+using MassTransit.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,7 +15,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
 
 
-// Despu�s de AddWebServices()
+// Despus de AddWebServices()
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -20,8 +25,45 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod());
 });
 
-var app = builder.Build();
 
+// Configuración de Redis
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect(redisConnectionString));
+
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<TaskConsumer>();
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("Task", e =>
+        {
+            e.ConfigureConsumer<TaskConsumer>(context);
+            e.PrefetchCount = 16;
+            e.UseMessageRetry(r => r.Interval(3, 1000));
+        });
+    });
+});
+
+
+
+
+//builder.Services.AddSingleton<RabbitMqService>();
+builder.Services.AddSingleton<TaskConsumer>();
+builder.Services.AddSingleton<GenericPublisher>();
+
+
+
+
+var app = builder.Build();
+//var taskConsumer = app.Services.GetRequiredService<TaskConsumer>();
+//taskConsumer.StartConsuming();
 
 
 // Configure the HTTP request pipeline.
@@ -61,6 +103,21 @@ app.Map("/", () => Results.Redirect("/api"));
 #endif
 
 app.MapEndpoints();
+
+var redis = app.Services.GetRequiredService<IConnectionMultiplexer>();
+var db = redis.GetDatabase();
+try
+{
+    db.StringSet("test", "working");
+    var result = db.StringGet("test");
+    Console.WriteLine($"Redis test: {result}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Redis error: {ex.Message}");
+}
+
+
 
 app.Run();
 
